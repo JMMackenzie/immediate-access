@@ -10,52 +10,9 @@
 #include "topk_queue.hpp"
 #include "query.hpp"
 
-// Heavily based on PISA's algos
-size_t boolean_conjunction_joel(std::vector<postings_cursor>& cursors) {
-
-  if (cursors.size() == 0) {
-    return 0;
-  }
-
-  std::vector<uint32_t> results;
-
-  std::vector<postings_cursor*> ordered_cursors;
-  ordered_cursors.reserve(cursors.size());
-  for (auto& curs : cursors) {
-    ordered_cursors.push_back(&curs);
-  }
-
-  // Order short to long
-  std::sort(ordered_cursors.begin(), ordered_cursors.end(), [](postings_cursor* l, postings_cursor* r) {
-    return l->doc_freq() < r->doc_freq();
-  });
-
-  uint32_t candidate = ordered_cursors[0]->docid();
-  size_t i = 1;
-  while (candidate != END_CHAIN) {
-    for(; i < ordered_cursors.size(); ++i) {
-     ordered_cursors[i]->next_geq(candidate);
-      if (ordered_cursors[i]->docid() != candidate) {
-        candidate = ordered_cursors[i]->docid();
-        i = 0;
-        break;
-      }
-    }
-
-    if (i == ordered_cursors.size()) {
-      results.push_back(candidate);
-      ordered_cursors[0]->next();
-      candidate = ordered_cursors[0]->docid();
-      i = 1;
-    }
-  }
- 
-  return results.size();
-
-}
-
-
-size_t boolean_conjunction_alistair(std::vector<postings_cursor>& cursors) {
+// Inspired by PISA's implementations
+//
+size_t boolean_conjunction(std::vector<postings_cursor>& cursors) {
 
   if (cursors.size() == 0) {
     return 0;
@@ -99,7 +56,7 @@ size_t boolean_conjunction_alistair(std::vector<postings_cursor>& cursors) {
   return results.size();
 }
 
-size_t profile_boolean_conjunction_alistair(std::vector<postings_cursor>& cursors) {
+size_t profile_boolean_conjunction(std::vector<postings_cursor>& cursors) {
 
   if (cursors.size() == 0) {
     return 0;

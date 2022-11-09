@@ -16,8 +16,8 @@ constexpr bool dummy = false;
 
 int main(int argc, const char **argv) {
 
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " [wsj1|robust|wiki] < /path/to/file\n";
+  if (argc != 3) {
+    std::cerr << "Usage: " << argv[0] << " [wsj1|robust|wiki] <output_file> < /path/to/docstream\n";
     return EXIT_FAILURE;
   }
 
@@ -28,6 +28,7 @@ int main(int argc, const char **argv) {
   std::cerr << "Magic F = " << MAGIC_F << "\n";
 
 
+  std::string output_path = std::string(argv[2]);
   size_t idx_blocks = 0;
   size_t hash_buckets = 0;
 
@@ -99,14 +100,14 @@ int main(int argc, const char **argv) {
 
   // Also time the serialization
   if (!dummy) {
-    std::ofstream out_idx("/ssd/jmmacke/tmp.idx", std::ios::binary);
+    std::ofstream out_idx(output_path, std::ios::binary);
     if (sort_serialize) {
       my_idx.serialize_pack(out_idx);
     } else {
       my_idx.serialize(out_idx);
     }
     time_micro = (get_time_usecs() - start);
-    std::cerr << "Indexed+Serialized to SSD in " << time_micro/1000.0 << " milliseconds\n";
+    std::cerr << "Indexed+Serialized in " << time_micro/1000.0 << " milliseconds\n";
   }
 
   std::cerr << "Done.\n";

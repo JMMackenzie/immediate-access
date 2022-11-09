@@ -14,7 +14,7 @@
 #include <type_traits>
 #include <cmath>
 
-#define VARIABLE_BLOCK
+//#define VARIABLE_BLOCK
 
 // A placeholder for the end/null/etc
 const uint32_t END_CHAIN = std::numeric_limits<uint32_t>::max();

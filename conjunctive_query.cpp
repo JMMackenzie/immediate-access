@@ -49,7 +49,7 @@ int main(int argc, const char **argv) {
     if (very_verbose) {
       auto cursors = query_to_cursors(my_idx, queries[i]);
       //size_t result_count = boolean_conjunction_joel(cursors);
-      size_t result_count = profile_boolean_conjunction_alistair(cursors);
+      size_t result_count = profile_boolean_conjunction(cursors);
       if (result_count > 0) {
         match_counts.push_back(result_count);
       }
@@ -57,8 +57,7 @@ int main(int argc, const char **argv) {
     } else {
       double start = get_time_usecs();
       auto cursors = query_to_cursors(my_idx, queries[i]);
-      //size_t result_count = boolean_conjunction_joel(cursors);
-      size_t result_count = boolean_conjunction_alistair(cursors);
+      size_t result_count = boolean_conjunction(cursors);
       do_not_optimize_away(result_count);
       double stop = get_time_usecs() - start;
       // XXX We're only counting queries with matches
